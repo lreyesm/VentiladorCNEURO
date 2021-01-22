@@ -1,0 +1,79 @@
+#ifndef MYLABELLONGPRESSANIMATED_H
+#define MYLABELLONGPRESSANIMATED_H
+
+
+#include <QLabel>
+#include <QMouseEvent>
+#include <QPropertyAnimation>
+#include <globals_settings.h>
+#include <QTimer>
+
+#define ANIM_TIME_L 150
+#define ANIM_SCALE_L 10
+#define DELAY_PRESS_HOLD 500
+#define PRESS_HOLD_ACTIVATIONS 150
+
+
+class MyLabelLongPressAnimated : public QLabel
+{
+    Q_OBJECT
+public:
+    explicit MyLabelLongPressAnimated(QWidget *parent = nullptr);
+     ~MyLabelLongPressAnimated();
+    void setEditable(bool);
+    void setTextInfo(QString information);
+    bool isActivatedState(){
+        return activated_state;
+    }
+    void setActivadeState(bool state){
+        activated_state = state;
+    }
+    void setAnimationInit();
+    void setAnimation(QPropertyAnimation *);
+    void startAnimation(int delay = 0, int scale =ANIM_SCALE_L, int anim_time =ANIM_TIME_L);
+
+    void setChecked(bool checked);
+    bool isChecked();
+
+
+    void setBackgroundImage(const QString image_filename);
+signals:
+    void doubleClickedLabel();
+    void mouseLeftClicked(QString);
+    void pressed();
+    void release();
+    void clicked();
+    void send_text(QString);
+    void mouseEntered(QPoint);
+
+protected:
+    void mousePressEvent(QMouseEvent *ev);
+    void mouseMoveEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *ev);
+
+public slots:
+    void hideChilds();
+
+private slots:
+    void setAnimationEnd();
+    void finalizadaAnimacion();
+    void setFotoInit(const QString&);
+    void emitirClicked();
+
+private:
+    QString info ="";
+    bool activated_state=false;
+    bool animationOnGoing =false;
+    QPropertyAnimation *animation=nullptr;
+    QRect startValue;
+    QRect endValue;
+    QSize maxSize, minSize;
+    int anim_scale = ANIM_SCALE_L;
+    int anim_time = ANIM_TIME_L;
+    bool emit_enabled = true;
+    bool state_pressed = false;
+    QTimer timer;
+
+};
+
+#endif // MYLABELLONGPRESSANIMATED_H

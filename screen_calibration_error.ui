@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Screen_Calibration_Error</class>
+ <widget class="QWidget" name="Screen_Calibration_Error">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>801</width>
+    <height>481</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>-1</x>
+     <y>-1</y>
+     <width>802</width>
+     <height>482</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(17, 21, 25);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="l_error_de_calibracion">
+   <property name="geometry">
+    <rect>
+     <x>225</x>
+     <y>140</y>
+     <width>350</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>DIN Pro Bold</family>
+     <pointsize>18</pointsize>
+     <weight>9</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+	font: 75 18pt &quot;DIN Pro Bold&quot;;
+     border-radius: 10px;
+     background-color: #DC0000;
+     color: #FFFFFF
+ }</string>
+   </property>
+   <property name="text">
+    <string>ERROR DE CALIBRACIÓN</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="pb_apagar">
+   <property name="geometry">
+    <rect>
+     <x>225</x>
+     <y>310</y>
+     <width>150</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>DIN Pro Medium</family>
+     <pointsize>18</pointsize>
+     <weight>7</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+	font: 57 18pt &quot;DIN Pro Medium&quot;;
+     border: 2px solid #FFFFFF;
+     border-radius: 10px;
+     color: #FFFFFF
+ }</string>
+   </property>
+   <property name="text">
+    <string>APAGAR</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="pb_modoAT">
+   <property name="geometry">
+    <rect>
+     <x>425</x>
+     <y>310</y>
+     <width>151</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>DIN Pro Medium</family>
+     <pointsize>18</pointsize>
+     <weight>7</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+	font: 57 18pt &quot;DIN Pro Medium&quot;;
+     border: 2px solid #FFFFFF;
+     border-radius: 10px;
+     color: #FFFFFF
+ }</string>
+   </property>
+   <property name="text">
+    <string>MODO AT</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

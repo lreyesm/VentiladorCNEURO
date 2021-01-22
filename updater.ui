@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Updater</class>
+ <widget class="QWidget" name="Updater">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>801</width>
+    <height>481</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="MyLabelStateAnimated" name="pb_update_raspberry_pi_qt">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>110</y>
+     <width>291</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>DIN Pro Medium</family>
+     <pointsize>18</pointsize>
+     <weight>7</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+	font: 57 18pt &quot;DIN Pro Medium&quot;;
+     border: 2px solid #FFFFFF;
+     border-radius: 10px;
+     color: #FFFFFF
+ }</string>
+   </property>
+   <property name="text">
+    <string>Update Qt app</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="MyLabelStateAnimated" name="pb_update_arduino">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>110</y>
+     <width>271</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>DIN Pro Medium</family>
+     <pointsize>18</pointsize>
+     <weight>7</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+	font: 57 18pt &quot;DIN Pro Medium&quot;;
+     border: 2px solid #FFFFFF;
+     border-radius: 10px;
+     color: #FFFFFF
+ }</string>
+   </property>
+   <property name="text">
+    <string>Update Arduino</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="plainTextEdit">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>220</y>
+     <width>621</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPlainTextEdit {
+	font: 57 15pt &quot;DIN Pro Cond Medium&quot;;
+     border-radius: 3px;
+     background-color: #E3E3E3;
+     color: #24292E
+ }</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>180</y>
+     <width>59</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 57 14pt &quot;DIN Pro Medium&quot;;
+     color: #FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>Log:</string>
+   </property>
+  </widget>
+  <widget class="MyLabelStateAnimated" name="pb_close">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>51</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Droid Sans Fallback</family>
+     <pointsize>18</pointsize>
+     <weight>75</weight>
+     <italic>false</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+     border: 2px solid #FFFFFF;
+     border-radius: 25px;
+     color: #FFFFFF
+ }</string>
+   </property>
+   <property name="text">
+    <string>X</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>-1</x>
+     <y>-1</y>
+     <width>802</width>
+     <height>482</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(17, 21, 25);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>label_2</zorder>
+  <zorder>pb_update_raspberry_pi_qt</zorder>
+  <zorder>pb_update_arduino</zorder>
+  <zorder>plainTextEdit</zorder>
+  <zorder>label</zorder>
+  <zorder>pb_close</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyLabelStateAnimated</class>
+   <extends>QLabel</extends>
+   <header location="global">mylabelstateanimated.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
