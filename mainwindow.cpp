@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }else{
         screen_logo = new Screen_Logo(this);
+        connect(this, &MainWindow::skipToVentilationScreen, screen_logo, &Screen_Logo::end_screen_logo);
         screen_logo->show();
         connect(screen_logo, &Screen_Logo::setFechaHoraReceived, this, &MainWindow::setFechaHoraReceived);
         connect(screen_logo, &Screen_Logo::closed_screen_logo, this, &MainWindow::on_closed_Screen_logo);
@@ -148,6 +149,7 @@ void MainWindow::on_closed_Screen_logo(){
     screen_logo->deleteLater();
     calibration_motor_active = true;
     screen_calibration = new Screen_Calibration(this);
+    connect(this, &MainWindow::skipToVentilationScreen, screen_calibration, &Screen_Calibration::end_Screen_Calibration);
     screen_calibration->show();
     conectarSignalsCalibracion(true);
     currentState = SerialPort::CALIBRACION_MOTOR;
@@ -189,6 +191,7 @@ void MainWindow::on_close_Screen_Calibration(){
     currentState = SerialPort::STANDBY;
     serialPort->enableTimeOutErrorTimer();
     screen_Pacient_Data = new Screen_Pacient_Data(this);
+    connect(this, &MainWindow::skipToVentilationScreen, screen_Pacient_Data, &Screen_Pacient_Data::close);
     screen_Pacient_Data->show();
     connect(screen_Pacient_Data, &Screen_Pacient_Data::closed_Screen_Pacient_Data, this, &MainWindow::on_close_Screen_Pacient_Data);
     connect(screen_Pacient_Data, &Screen_Pacient_Data::settedFechaHora, this, &MainWindow::setFechaHoraReceived);
@@ -1322,7 +1325,7 @@ void MainWindow::salvarConfiguraciondeCapnografia(int max_vol){
     }
 }
 void MainWindow::chequearConfiguracionCapnografia(){
-   capnography_active = checkifCapnographyActive();
+    capnography_active = checkifCapnographyActive();
 }
 
 bool MainWindow::checkifCapnographyActive(){
@@ -1366,7 +1369,7 @@ void MainWindow::comunicacionCaida(){
     ui->l_ventilation_state->hide();
     ui->widget_data->hide();
     ui->statusBar->showMessage("Se ha caido la comunicacion, se ha cerrado el puerto", 6000);
-    showAlarm("Error", "Se ha perdido la comunicación");
+    showAlarm("Error fatal", "Contacte con asistencia técnica");
     qDebug()<<"Se ha caido la comunicacion, se ha cerrado el puerto*************************";
 
     soundBuzzer();//Hacer esto una sola vez
@@ -1442,7 +1445,7 @@ void MainWindow::writeInitialConfigurationLog(){
     if(capnography_active){
         evento = "Configuracion Inicial ETCO2 -> " + QString::number(static_cast<double>(alarma_etco2), 'f', 0);
         write_LOG(evento);
-    }    
+    }
     evento = "Configuracion Max Volumen -> " + QString::number(static_cast<double>(MAX_VOLUMEN), 'f', 0);
     write_LOG(evento);
 }
@@ -1654,9 +1657,9 @@ QByteArray MainWindow::sendData(float state){
     buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 20 - Tiempo de Plateau
                                                                                          IEEE_754_class::convertirA_754_32(t_plateau))));
 
-    buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 21 - Tiempo de Plateau
+    buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 21 - Alarm FIO2
                                                                                          IEEE_754_class::convertirA_754_32(alarma_fio2))));
-    buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 21 - Tiempo de Plateau
+    buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 21 - Alarm CO2
                                                                                          IEEE_754_class::convertirA_754_32(alarma_etco2))));
 
 
@@ -1882,7 +1885,7 @@ bool MainWindow::parseInformation(const QByteArray &dataReceived){
     temp = dataReceived.mid(CMD_STATE_CLOCK_POS, WORD_SIZE_BYTES);
     float cmd_state_hora = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
 
-//    ui->l_clock_state->setText(QString::number(static_cast<double>(cmd_state_hora), 'f', 0));
+    //    ui->l_clock_state->setText(QString::number(static_cast<double>(cmd_state_hora), 'f', 0));
     if(static_cast<int>(cmd_state_hora) != SerialPort::OMIT_CLOCK){
         if(static_cast<int>(cmd_state_hora) == SerialPort::SET_FROM_ARDUINO
                 || static_cast<int>(cmd_state_hora) == SerialPort::SET_FROM_ARDUINO_ERROR_CLOCK){
@@ -1980,7 +1983,7 @@ bool MainWindow::parseInformation(const QByteArray &dataReceived){
         //        }
     }
 
-//    ui->l_alarm_values->setText(QString::number(static_cast<double>(EstadoAlarmas), 'f', 0));
+    //    ui->l_alarm_values->setText(QString::number(static_cast<double>(EstadoAlarmas), 'f', 0));
 
     ui->l_PIP->setText(QString::number(static_cast<double>(PIP), 'f', 0));
     ui->l_Ppla->setText(QString::number(static_cast<double>(Ppla), 'f', 0));
@@ -2086,7 +2089,7 @@ void MainWindow::on_l_power_clicked()
 
             disconnect(serialPort, &SerialPort::dataAvailable, this , &MainWindow::readSerialPortStandby);
             connect(serialPort, &SerialPort::dataAvailable, this , &MainWindow::readSerialPort);
-            //connect(serialPort, &SerialPort::comunicacionCaida, this , &MainWindow::comunicacionCaida);
+            connect(serialPort, &SerialPort::comunicacionCaida, this , &MainWindow::comunicacionCaida);
             currentState = SerialPort::VENTILACION;
             //            sendData(SerialPort::VENTILACION);
             started_ventilation = true;
@@ -2133,6 +2136,7 @@ void MainWindow::openSerialPort(){
     }
     connect(serialPort, &SerialPort::conexion_encontrada, this , &MainWindow::conexion_encontrada);
     connect(serialPort, &SerialPort::turn_off_program, this , &MainWindow::questionTurnOff);
+    connect(serialPort, &SerialPort::configurar_parametros, this, &MainWindow::configureStateAndParameters);
     //    connect(serialPort, &SerialPort::conexion_encontrada, this , &MainWindow::conexion_encontrada);
 
     if(serialPort->isOpen()){
@@ -2148,6 +2152,98 @@ void MainWindow::openSerialPort(){
         ui->widget_data->hide();
     }
 }
+
+//Configure state and parameters-----------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------
+void MainWindow::configureStateAndParameters(const QByteArray &data)
+{
+    //Decodificar informacion recibida por serie-------------------------------------------------
+    dataReceived = data;
+
+    if(first_received){
+        first_received=false;
+    }
+    if(decodeStateAndParameters(data)){
+        QTimer::singleShot(100, this, SLOT(sendDataWithDelay()));
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------------
+
+//Decode parameters and state received-----------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------
+bool MainWindow::decodeStateAndParameters(const QByteArray &dataReceived)
+{
+    if(dataReceived.size() >= UART_READ_TOTAL_SIZE){
+
+        QByteArray temp;
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_STATE_POS, WORD_SIZE_BYTES);
+        int state = static_cast<int>(IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp))));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_TIDAL_VOLUME_POS, WORD_SIZE_BYTES);
+        VolumenTidal = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setVolumen_Tidal(static_cast<int>(VolumenTidal));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_BPM_POS, WORD_SIZE_BYTES);
+        BPM = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setBPM(static_cast<int>(BPM));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_IE_POS, WORD_SIZE_BYTES);
+        Relacion_IE = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setRelacionIE(Relacion_IE);
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_TPLAT_POS, WORD_SIZE_BYTES);
+        t_plateau = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setTplateau(static_cast<double>(t_plateau));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_PMAX_POS, WORD_SIZE_BYTES);
+        Pmax = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setPmax(static_cast<int>(Pmax));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_PMIN_POS, WORD_SIZE_BYTES);
+        Pmin = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setPmax(static_cast<int>(Pmin));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_VENTILATION_MODE_POS, WORD_SIZE_BYTES);
+        ModoVentilacion = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setMode(static_cast<int>(ModoVentilacion));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_ASSIST_TRIGGER_POS, WORD_SIZE_BYTES);
+        trigger_asistido = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setTriggerAsistido(static_cast<int>(trigger_asistido));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_FIO2_ALARM_POS, WORD_SIZE_BYTES);
+        alarma_fio2 = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setFiO2(static_cast<int>(alarma_fio2));
+
+        temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_CO2_ALARM_POS, WORD_SIZE_BYTES);
+        alarma_etco2 = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
+        setETCO2(static_cast<int>(alarma_etco2));
+
+        emit skipToVentilationScreen();
+
+        bool lastVentState = false;
+        if(state == SerialPort::VENTILACION){
+            lastVentState = true;
+        }
+        QString pacient_name;
+        if(checkForceClosed(pacient_name)){
+            paciente.setName(pacient_name);
+            paciente.setFolderPacient();
+            paciente.read_file();//lee informacione de paciente
+
+            ventilation_screen = true;
+
+            if(lastVentState){
+                ui->l_power->setChecked(true);
+                on_l_power_clicked();
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
 void MainWindow::stopVentilation(){
     if(silence_activated){
         afterMinutesAlarmCheck();
@@ -2293,7 +2389,7 @@ void MainWindow::startOxygenCalibration100Porcentyle(int ok){
         calibration_oxigeno_active = true;
         currentState = SerialPort::CALIBRACION_OXIGENO_100;
 
-//        QTimer::singleShot(3000, this, &MainWindow::successOxygenCalibration);
+        //        QTimer::singleShot(3000, this, &MainWindow::successOxygenCalibration);
         connect(serialPort, &SerialPort::calibracion_exitosa_oxigeno, this, &MainWindow::successOxygenCalibration);
         connect(serialPort, &SerialPort::calibracion_fallida_oxigeno, this, &MainWindow::errorOxygenCalibration);
 

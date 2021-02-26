@@ -297,12 +297,12 @@ public:
         le_edad->raise();
         label_11->raise();
         le_sexo->raise();
-        pt_comentarios->raise();
         l_icon_comentarios->raise();
         le_weight->raise();
         label_14->raise();
         l_version->raise();
         label_5->raise();
+        pt_comentarios->raise();
 
         retranslateUi(Screen_Pacient_Data);
 

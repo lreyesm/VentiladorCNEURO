@@ -5832,9 +5832,9 @@
    <widget class="QLabel" name="l_max_vol">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>510</x>
       <y>50</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -5859,7 +5859,7 @@
      <rect>
       <x>430</x>
       <y>50</y>
-      <width>91</width>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -5911,14 +5911,14 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MyLabelStateAnimated</class>
-   <extends>QLabel</extends>
-   <header location="global">mylabelstateanimated.h</header>
-  </customwidget>
-  <customwidget>
    <class>MyLabelAnimated</class>
    <extends>QLabel</extends>
    <header location="global">mylabelanimated.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyLabelStateAnimated</class>
+   <extends>QLabel</extends>
+   <header location="global">mylabelstateanimated.h</header>
   </customwidget>
   <customwidget>
    <class>MyLabelStateTextAnimated</class>

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "serialport.h"
 #include <QDateTime>
+#include <QTimer>
 
 namespace Ui {
 class Screen_Logo;
@@ -25,12 +26,14 @@ public slots:
     void startLogoAnimation();
     void close_screen_logo();
 
+    void end_screen_logo();
 private slots:
 
     void on_l_logo_clicked();
 
 private:
     Ui::Screen_Logo *ui;
+    QTimer timer;
 };
 
 #endif // SCREEN_LOGO_H

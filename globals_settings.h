@@ -7,7 +7,7 @@
 
 static QString nombre_equipo = "PCUVENTE01";
 
-static QString version_software = "1.1";
+static QString version_software = "1.2";
 
 static QColor color_active_alarm = QColor(255,255,255); //QColor(243,100,100);
 static QColor color_low_priority = QColor(254,147,20);

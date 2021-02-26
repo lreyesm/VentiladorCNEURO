@@ -86,6 +86,8 @@ void PasswordRequest::on_pb_ok_clicked()
     }
     emit loginFailed();
     MessageDialog *msg = new MessageDialog(this, "Error", "Nombre de usuario o contraseña incorrecta");
+    ui->widget->hide();
+    connect(msg, &MessageDialog::aceptado, ui->widget, &QWidget::show);
     msg->showCenter();
 }
 

@@ -315,14 +315,14 @@ QProgressBar {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MyLabelStateAnimated</class>
-   <extends>QLabel</extends>
-   <header location="global">mylabelstateanimated.h</header>
-  </customwidget>
-  <customwidget>
    <class>MyLabelAnimated</class>
    <extends>QLabel</extends>
    <header location="global">mylabelanimated.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyLabelStateAnimated</class>
+   <extends>QLabel</extends>
+   <header location="global">mylabelstateanimated.h</header>
   </customwidget>
  </customwidgets>
  <resources>

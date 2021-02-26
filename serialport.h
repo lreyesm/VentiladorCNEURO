@@ -8,7 +8,8 @@
 #include "checkserialmessage.h"
 #include "ieee_754_class.h"
 
-#define MAX_ERROR_ADMITED 10
+#define MAX_ERROR_ADMITED 30 //TIMEOUT_ERROR_COMMUNICATION * MAX_ERROR_ADMITED milliseconds //800*30 = 24000 milliseconds -> 24 seconds
+#define TIMEOUT_ERROR_COMMUNICATION 800 //milliseconds
 
 class SerialPort : public QSerialPort
 {
@@ -19,7 +20,8 @@ public:
     enum{ERROR_MESSAGE = 0, OK, TURN_OFF, CALIBRACION_OK_MOTOR, CALIBRACION_OK_PRESION, ERROR_CALIBRACION/*5*/,
          CALIBRACION_OXIGENO_ONGOING/*6*/, CALIBRACION_OXIGENO_OK/*7*/, CALIBRACION_OXIGENO_ERROR/*8*/,
          CALIBRACION_PRESION_ONGOING/*9*/, CALIBRACION_PRESION_OK/*10*/, CALIBRACION_PRESION_ERROR/*11*/,
-         CALIBRACION_VOLUMEN_ONGOING/*12*/, CALIBRACION_VOLUMEN_OK/*13*/, CALIBRACION_VOLUMEN_ERROR/*14*/
+         CALIBRACION_VOLUMEN_ONGOING/*12*/, CALIBRACION_VOLUMEN_OK/*13*/, CALIBRACION_VOLUMEN_ERROR/*14*/,
+         CONFIGURAR_PARAMETROS/*15*/
         }typedef AnswerType; //lo q envia el pipo
 
     enum{ERROR_CMD =0, STANDBY/*1*/, CALIBRACION_PRESION/*2*/, CALIBRACION_MOTOR/*3*/, VENTILACION/*4*/, APAGADO/*5*/,
@@ -55,6 +57,8 @@ signals:
     void turn_off_program();
     void conexion_encontrada(QStringList);
     void comunicacionCaida();
+
+    void configurar_parametros(QByteArray);
 
 public slots:
     void write_Data(const QByteArray &data);

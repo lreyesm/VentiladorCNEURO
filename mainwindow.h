@@ -71,9 +71,11 @@ public:
     void chequearConfiguracionCapnografia();
     bool checkifCapnographyActive();
     void salvarConfiguraciondeCapnografia(bool activa);
+
 signals:
     void hideAdvanceMenu();
     void ventilationStarted(bool);
+    void skipToVentilationScreen();
 
 public slots:
     bool parseInformation(const QByteArray &dataReceived);
@@ -82,6 +84,7 @@ protected slots:
     void closeEvent(QCloseEvent *event);   
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+
 private slots:
     void disableAlarmButton();
     void on_newConnection(QString);
@@ -173,6 +176,8 @@ private slots:
     void requestOxygenCalibration100Porcentyle();
     void successOxygenCalibration();
     void errorOxygenCalibration();
+    void configureStateAndParameters(const QByteArray &data);
+    bool decodeStateAndParameters(const QByteArray &dataReceived);
 private:
     Ui::MainWindow *ui;
     void setFechaHoraReceivedFromArduino(QDateTime date_time);

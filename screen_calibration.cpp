@@ -2,6 +2,9 @@
 #include "ui_screen_calibration.h"
 #include "screen_modo_at.h"
 #include "globals_settings.h"
+#include "screen_apagado_sistema.h"
+#include "messagedialog.h"
+#include "processesclass.h"
 
 Screen_Calibration::Screen_Calibration(QWidget *parent) :
     QWidget(parent),
@@ -38,12 +41,27 @@ void Screen_Calibration::updateProgresBarCalibrationMotor()
     int value = ui->progressBar_calibracion->value();
     value += 10;
     incrementProgressBar(value);
-//    if(value >= 50) {  //Comentar este if si no esta conectado al arduino***********************************************************************
-//        disconnect(&timer, &QTimer::timeout, this, &Screen_Calibration::updateProgresBarCalibrationMotor);
-//        timer.stop();
-//    }
+    if(value >= 50) {  //Comentar este if si no esta conectado al arduino***********************************************************************
+        disconnect(&timer, &QTimer::timeout, this, &Screen_Calibration::updateProgresBarCalibrationMotor);
+        timer.stop();
+        timerFatalError.setInterval(TIMEOUT_ERROR_COMMUNICATION*MAX_ERROR_ADMITED/*24 seconds*/);
+        connect(&timerFatalError, &QTimer::timeout, this, &Screen_Calibration::fatalErrorApp);
+        timerFatalError.start();
+    }
 }
+// Slot Function that sounds buzzer---------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------
+void Screen_Calibration::soundBuzzer(){//(la clase ReadTempDS18B20 se encarga de todo
+    ProcessesClass::executeProcess(this, "sudo python /home/pi/Ventilador/Ventilador/scripts/sound_buzzer.py", ProcessesClass::LINUX, 100);
+}
+//----------------------------------------------------------------------------------------------------------------------------
 
+void Screen_Calibration::fatalErrorApp(){
+    timerFatalError.stop();
+    disconnect(&timerFatalError, &QTimer::timeout, this, &Screen_Calibration::fatalErrorApp);
+    MessageDialog *mess = new MessageDialog(this, "Error fatal", "Contacte con asistencia técnica");
+    mess->showCenter();
+}
 void Screen_Calibration::initPresureCalibration(){
     connect(&timer, &QTimer::timeout, this, &Screen_Calibration::updateProgresBarCalibrationPresion);
     timer.start();
@@ -77,10 +95,15 @@ void Screen_Calibration::on_progressBar_calibracion_valueChanged(int value)
 
 void Screen_Calibration::close_Screen_Calibration(){
     if(!modo_AT_active){
-        timer.stop();
+        end_Screen_Calibration();
         emit closed_screen_calibration();
-        close();
     }
+}
+void Screen_Calibration::end_Screen_Calibration(){
+    timer.stop();
+    disconnect(&timerFatalError, &QTimer::timeout, this, &Screen_Calibration::fatalErrorApp);
+    timerFatalError.stop();
+    this->close();
 }
 
 void Screen_Calibration::on_pb_continue_clicked()

@@ -733,12 +733,12 @@
   <zorder>le_edad</zorder>
   <zorder>label_11</zorder>
   <zorder>le_sexo</zorder>
-  <zorder>pt_comentarios</zorder>
   <zorder>l_icon_comentarios</zorder>
   <zorder>le_weight</zorder>
   <zorder>label_14</zorder>
   <zorder>l_version</zorder>
   <zorder>label_5</zorder>
+  <zorder>pt_comentarios</zorder>
  </widget>
  <customwidgets>
   <customwidget>

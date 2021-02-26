@@ -161,6 +161,9 @@ QByteArray SerialPort::decodeMessage(QByteArray bytesArray){
     if(answer == OK){
         emit dataAvailable(bytesArray);
     }
+    else if(answer == CONFIGURAR_PARAMETROS){
+        emit configurar_parametros(bytesArray);
+    }
     else if(answer == CALIBRACION_VOLUMEN_ONGOING){
         emit dataAvailable(bytesArray);
     }
@@ -247,6 +250,8 @@ void SerialPort::write_Data_Error()
     if(counter_error >= MAX_ERROR_ADMITED){
         counter_error = 0;
         emit comunicacionCaida();
+        timerComunication.stop();
+        disconnect(&timerComunication, &QTimer::timeout, this, &SerialPort::timeOutConection);
     }
     resetVariables();
     write_State_Data(ERROR_CMD);
@@ -292,7 +297,7 @@ void SerialPort::write_State_Data(float state){
 void SerialPort::write_Data(const QByteArray &data)
 {
     timerComunication.stop();
-    timerComunication.setInterval(800); //Si cae la comunicacion emito señal
+    timerComunication.setInterval(TIMEOUT_ERROR_COMMUNICATION); //Si cae la comunicacion emito señal
     if(timer_error_enable){
         timerComunication.start();
     }

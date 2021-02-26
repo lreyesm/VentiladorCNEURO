@@ -8,8 +8,10 @@ Screen_Logo::Screen_Logo(QWidget *parent) :
 {
     ui->setupUi(this);    
     ui->l_version->setText(version_software);
-    QTimer::singleShot(3000, this, SLOT(close_screen_logo()));
-    qDebug()<<"cambio**************11111111**********";
+    timer.setInterval(3000);
+    connect(&timer, &QTimer::timeout, this, &Screen_Logo::close_screen_logo);
+    timer.start();
+    qDebug()<<"cambio**************55555555***************";
 }
 
 Screen_Logo::~Screen_Logo()
@@ -19,9 +21,13 @@ Screen_Logo::~Screen_Logo()
 
 void Screen_Logo::close_screen_logo(){
     emit closed_screen_logo();
+    end_screen_logo();
+}
+void Screen_Logo::end_screen_logo(){
+    timer.stop();
+    disconnect(&timer, &QTimer::timeout, this, &Screen_Logo::close_screen_logo);
     close();
 }
-
 void Screen_Logo::startLogoAnimation(){
     ui->l_logo->startAnimation(false, 40, 1000);
 //    QTimer::singleShot(3000, this, SLOT(close_screen_logo()));

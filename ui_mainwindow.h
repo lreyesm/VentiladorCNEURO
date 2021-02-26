@@ -1313,7 +1313,7 @@ public:
         l_alarm_icon->setAlignment(Qt::AlignCenter);
         l_max_vol = new QLabel(centralWidget);
         l_max_vol->setObjectName(QStringLiteral("l_max_vol"));
-        l_max_vol->setGeometry(QRect(520, 50, 51, 31));
+        l_max_vol->setGeometry(QRect(510, 50, 71, 31));
         QFont font15;
         font15.setFamily(QStringLiteral("DIN Pro"));
         font15.setPointSize(15);
@@ -1322,7 +1322,7 @@ public:
         l_max_vol->setAlignment(Qt::AlignCenter);
         l_alarm_values_4 = new QLabel(centralWidget);
         l_alarm_values_4->setObjectName(QStringLiteral("l_alarm_values_4"));
-        l_alarm_values_4->setGeometry(QRect(430, 50, 91, 31));
+        l_alarm_values_4->setGeometry(QRect(430, 50, 81, 31));
         l_alarm_values_4->setFont(font15);
         l_alarm_values_4->setStyleSheet(QStringLiteral("color: rgb(255, 255, 255);"));
         l_alarm_values_4->setAlignment(Qt::AlignCenter);

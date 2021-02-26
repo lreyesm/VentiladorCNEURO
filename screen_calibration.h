@@ -21,6 +21,7 @@ public slots:
     void initPresureCalibration();
     void incrementProgressBar(int value);
 
+    void end_Screen_Calibration();
 signals:
     void closed_screen_calibration();
 
@@ -35,9 +36,11 @@ private slots:
 
     void on_pb_modo_at_clicked();
 
+    void fatalErrorApp();
+    void soundBuzzer();
 private:
     Ui::Screen_Calibration *ui;
-    QTimer timer;
+    QTimer timer, timerFatalError;
     bool  modo_AT_active = false;
 };
 
