@@ -158,12 +158,12 @@ QByteArray SerialPort::decodeMessage(QByteArray bytesArray){
     QByteArray temp = bytesArray.mid(RESPUESTA_POS, WORD_SIZE_BYTES); ///Respuesta (word 2)
     int answer = static_cast<int>(IEEE_754_class::convertirDesde_754_32(
                                       IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp))));
-    if(answer == OK){
-        emit dataAvailable(bytesArray);
-    }
-    else if(answer == CONFIGURAR_PARAMETROS){
+    if(answer == CONFIGURAR_PARAMETROS){
         emit configurar_parametros(bytesArray);
     }
+    else if(answer == OK){
+        emit dataAvailable(bytesArray);
+    }     
     else if(answer == CALIBRACION_VOLUMEN_ONGOING){
         emit dataAvailable(bytesArray);
     }

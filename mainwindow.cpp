@@ -2202,7 +2202,7 @@ bool MainWindow::decodeStateAndParameters(const QByteArray &dataReceived)
 
         temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_PMIN_POS, WORD_SIZE_BYTES);
         Pmin = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
-        setPmax(static_cast<int>(Pmin));
+        setPmin(static_cast<int>(Pmin));
 
         temp = dataReceived.mid(BUFFER_DATA_POS + CONFIGURE_VENTILATION_MODE_POS, WORD_SIZE_BYTES);
         ModoVentilacion = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
@@ -2220,10 +2220,9 @@ bool MainWindow::decodeStateAndParameters(const QByteArray &dataReceived)
         alarma_etco2 = IEEE_754_class::convertirDesde_754_32(IEEE_754_class::convert_Bytes_To_Uint32(IEEE_754_class::changeEndianess(temp)));
         setETCO2(static_cast<int>(alarma_etco2));
 
-        emit skipToVentilationScreen();
-
         bool lastVentState = false;
         if(state == SerialPort::VENTILACION){
+            currentState = SerialPort::VENTILACION;
             lastVentState = true;
         }
         QString pacient_name;
@@ -2231,14 +2230,13 @@ bool MainWindow::decodeStateAndParameters(const QByteArray &dataReceived)
             paciente.setName(pacient_name);
             paciente.setFolderPacient();
             paciente.read_file();//lee informacione de paciente
-
-            ventilation_screen = true;
-
-            if(lastVentState){
-                ui->l_power->setChecked(true);
-                on_l_power_clicked();
-            }
         }
+        if(lastVentState){
+            ventilation_screen = true;
+            ui->l_power->setChecked(true);
+            on_l_power_clicked();
+        }
+        emit skipToVentilationScreen();
         return true;
     }
     return false;
