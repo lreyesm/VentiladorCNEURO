@@ -11,7 +11,7 @@ Screen_Logo::Screen_Logo(QWidget *parent) :
     timer.setInterval(3000);
     connect(&timer, &QTimer::timeout, this, &Screen_Logo::close_screen_logo);
     timer.start();
-    qDebug()<<"cambio**************232323232332***************";
+    qDebug()<<"cambio**************4444444444***************";
 }
 
 Screen_Logo::~Screen_Logo()

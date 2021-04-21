@@ -24,6 +24,7 @@ public:
     QLabel *label;
     QLabel *l_loading_text;
     QWidget *widget_loading;
+    QLabel *l_sand_watch;
     QLabel_Button *l_background_blur;
 
     void setupUi(QWidget *LoadingAnimation)
@@ -66,6 +67,11 @@ public:
         widget_loading = new QWidget(widget);
         widget_loading->setObjectName(QStringLiteral("widget_loading"));
         widget_loading->setGeometry(QRect(195, 70, 100, 100));
+        l_sand_watch = new QLabel(widget);
+        l_sand_watch->setObjectName(QStringLiteral("l_sand_watch"));
+        l_sand_watch->setGeometry(QRect(210, 80, 52, 70));
+        l_sand_watch->setPixmap(QPixmap(QString::fromUtf8(":/icons/sand_watch.png")));
+        l_sand_watch->setScaledContents(true);
         l_background_blur = new QLabel_Button(LoadingAnimation);
         l_background_blur->setObjectName(QStringLiteral("l_background_blur"));
         l_background_blur->setGeometry(QRect(-10, -10, 820, 500));
@@ -84,6 +90,7 @@ public:
         LoadingAnimation->setWindowTitle(QApplication::translate("LoadingAnimation", "Form", nullptr));
         label->setText(QString());
         l_loading_text->setText(QApplication::translate("LoadingAnimation", "Cargando...", nullptr));
+        l_sand_watch->setText(QString());
         l_background_blur->setText(QString());
     } // retranslateUi
 

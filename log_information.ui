@@ -92,6 +92,12 @@
      </item>
      <item>
       <widget class="QLabel" name="l_page">
+       <property name="minimumSize">
+        <size>
+         <width>55</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>DIN Pro Cond Bold</family>

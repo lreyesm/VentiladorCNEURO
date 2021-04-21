@@ -77,6 +77,7 @@ public:
 
         l_page = new QLabel(Log_Information);
         l_page->setObjectName(QStringLiteral("l_page"));
+        l_page->setMinimumSize(QSize(55, 0));
         l_page->setFont(font);
         l_page->setStyleSheet(QStringLiteral("color: rgb(227, 227, 227);"));
         l_page->setScaledContents(true);

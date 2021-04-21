@@ -25,6 +25,20 @@ LoadingAnimation::~LoadingAnimation()
 {
     delete ui;
 }
+void LoadingAnimation::showLoadingAnimation(bool show){
+    show_animation = show;
+}
+
+void LoadingAnimation::centerWidget(){
+    this->move(0, 0);
+    int h = this->parentWidget()->height() ;
+    int w = this->parentWidget()->width() ;
+    if(h > 480){ h=480;}
+    if(w > 800){ w=800;}
+    int xpos = static_cast<int>(static_cast<float>(w - ui->widget->width())/2);
+    int ypos = static_cast<int>(static_cast<float>(h - ui->widget->height())/2);
+    ui->widget->move(xpos, ypos-20);
+}
 void LoadingAnimation::setLoadingText(QString text)
 {
     if(!text.isEmpty()){
@@ -43,16 +57,22 @@ void LoadingAnimation::showAnimation(){
 }
 void LoadingAnimation::startAnimation()
 {
-    QProgressIndicator* pi = new QProgressIndicator();
-    QObject::connect(this, SIGNAL(stoppedAnimation()), pi, SLOT(stopAnimation()));
+    if(show_animation){
+        ui->l_sand_watch->hide();
+        QProgressIndicator* pi = new QProgressIndicator();
+        QObject::connect(this, SIGNAL(stoppedAnimation()), pi, SLOT(stopAnimation()));
 
-    QHBoxLayout* hbl = new QHBoxLayout(ui->widget_loading);
-    hbl->addWidget(pi);
+        QHBoxLayout* hbl = new QHBoxLayout(ui->widget_loading);
+        hbl->addWidget(pi);
 
-    pi->setColor(color_green_oxigen);
-    pi->setFixedSize(90, 90);
-    pi->setAnimationDelay(50);
-    pi->startAnimation();
+        pi->setColor(color_green_oxigen);
+        pi->setFixedSize(90, 90);
+        pi->setAnimationDelay(50);
+        pi->startAnimation();
+    }
+    else{
+        ui->l_sand_watch->show();
+    }
 }
 
 void LoadingAnimation::stopAnimation()

@@ -64,6 +64,8 @@ public:
     void setCapnographyActive(bool active);
     bool getCapnographyActive();
     float getMaxVolumen();
+    float getCopyingState();
+    void setCopyingState(float copyState);
     void setMaxVolumen(float max_vol);
     void salvarConfiguraciondeCapnografia(int max_vol);
     int checkifMaxVolumenActive();
@@ -205,10 +207,10 @@ private:
     void adjustBarLevels(int level_p_max=-1, int level_pinst=-1, int level_peep=-1);
 
     float MAX_VOLUMEN = MAX_VOLUMEN_TIDAL;
-    float VolumenTidal = 150;
-    float BPM = 25;
+    float VolumenTidal = 200;
+    float BPM = 13;
     float Relacion_IE = 0.5;
-    float Tplat = 2;
+    float copyingState = 0;
     float Pmax = MAX_P_MAX_LEVEL_BAR;
     float Pmin = 0; //peep configurada
     float ModoVentilacion = 1;
@@ -231,7 +233,7 @@ private:
     float alarma_etco2 = static_cast<float>(40);
     float t_plateau = static_cast<float>(0.1);
     float trigger_asistido = 2;
-    float Ti = static_cast<float>(0.3);
+    float Ti = static_cast<float>(1.5);
 
     bool lastVentState = false; //Ultimo estado de ventlacion antes de cerrar app
 

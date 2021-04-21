@@ -46,7 +46,6 @@ KeyBoard::KeyBoard(QWidget *parent, QWidget *widget,  bool numeric, double width
     }else{
         fillKeys();
     }
-
 }
 
 KeyBoard::~KeyBoard()
@@ -360,13 +359,31 @@ void KeyBoard::onEraseClicked(){
 void KeyBoard::setKeyButton(QString key, QPoint pos, QSize size, void (KeyBoard::*funcion)(), bool enabled){
     QPushButton *key_button = new QPushButton(ui->widget_keys);
 
-    QIcon icon(":/icons/keyword/"+key+".png");
-    key_button->setIcon(icon);
-    key_button->setIconSize(QSize(icons_size, icons_size));
+    if(key.contains("change_to_numbers")){
+        if(key == "change_to_numbers"){
+            key_button->setText("?123");
+        }
+        else if(key == "change_to_numbers_extra_keys_1"){
+            key_button->setText("1/2");
+        }
+        else if(key == "change_to_numbers_extra_keys_2"){
+            key_button->setText("2/2");
+        }
+        QFont font = this->font();
+        font.setPointSize(18);
+        key_button->setFont(font);
+    }
+    else{
+        QIcon icon(":/icons/keyword/"+key+".png");
+        key_button->setIcon(icon);
+        key_button->setIconSize(QSize(icons_size, icons_size));
+    }
+
 
     key_button->move(pos);
     key_button->setStyleSheet(QStringLiteral("QPushButton {"
                                              "border-radius: 5px;"
+                                             "color: rgb(36, 41, 46);"
                                              "background-color: rgb(255, 255, 255);"
                                              "}"));
     key_button->setFixedSize(size);

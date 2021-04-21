@@ -5,6 +5,8 @@
 #include <QDir>
 #define LOGS_IN_SCREEN 9
 
+class MainWindow;
+
 namespace Ui {
 class Download_Data;
 }
@@ -17,7 +19,9 @@ public:
     explicit Download_Data(QWidget *parent = nullptr, QString pacient_name = "Ale");
     ~Download_Data();
     static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
-
+    MainWindow* getMainWindowInstance();
+signals:
+    void stopAnimation();
 private slots:
     void on_listWidget_pressed(const QModelIndex &index);
 
@@ -33,6 +37,8 @@ private slots:
 
     void onScrollerChanged(int value);
     void selectedDrive(QString drive);
+    void initCopyPacient();
+    void initCopyAll();
 private:
     Ui::Download_Data *ui;
     QString searchDrivesAndCreateDir(QDir &dir);
@@ -52,6 +58,8 @@ private:
     QString selected_drive = "";
     QString drivePath = "";
     QString rootFolder = "/media/pi/";
+    void setCopyingState(float state);
+    QString removeUSBMocks();
 };
 
 #endif // DOWNLOAD_DATA_H

@@ -29,11 +29,11 @@ void Pacient_Data_in_Menu::setPacientData(const PacientClass &pacient){
     if(pacient.has_name){
         ui->le_nombre->setText(pacient.name_pacient);
     }
-    ui->le_edad->setText(pacient.age_pacient);
+    ui->le_edad->setText(pacient.age_pacient!="-1"?pacient.age_pacient:"");
     ui->le_CI_HC->setText(pacient.ID);
-    ui->le_weight->setText(pacient.weight);
-    ui->le_height->setText(pacient.height);
-    ui->le_sexo->setText(pacient.sexo_paciente);
+    ui->le_weight->setText(pacient.weight!="0"?pacient.weight:"");
+    ui->le_height->setText(pacient.height!="0"?pacient.height:"");
+    ui->le_sexo->setText(pacient.sexo_paciente!="unknow"?pacient.sexo_paciente:"");
     ui->pt_comentarios->setPlainText(pacient.comentarios);
 
     bool has_name = pacient.has_name;
@@ -129,7 +129,7 @@ void Pacient_Data_in_Menu::on_pb_aceptar_clicked()
     QString name = ui->le_nombre->text().trimmed();
     QString edad = ui->le_edad->text();
     if(!name.isEmpty()){
-        if(!pacient.has_name){
+        if(!pacient.has_name || name != pacient.name_pacient){
             //Copy all previous content to new folder with correct name
             save_old_data = true;
             old_dir = pacient.getMainDir();
@@ -160,6 +160,7 @@ void Pacient_Data_in_Menu::on_pb_aceptar_clicked()
                 }
             }
         }
+        pacient.age_pacient = edad;
         pacient.comentarios = ui->pt_comentarios->toPlainText();
         pacient.ID = ui->le_CI_HC->text().trimmed();
         pacient.weight = ui->le_weight->text();

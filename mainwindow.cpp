@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     //    this->showFullScreen();
     ProcessesClass::executeProcess(this, "sudo nice -n-20 /home/pi/TCP_IP_Client/TCP_IP_Client", ProcessesClass::LINUX, 1000, false);
 
@@ -276,7 +277,7 @@ void MainWindow::write_TCP_Data(){
     jsonObject.insert("VolumenTidal", QString::number(static_cast<double>(VolumenTidal), 'f', 0));
     jsonObject.insert("BPM", QString::number(static_cast<double>(BPM), 'f', 0));
     jsonObject.insert("Relacion_IE", QString::number(static_cast<double>(Relacion_IE), 'f', 2));
-    jsonObject.insert("Tplat", QString::number(static_cast<double>(Tplat), 'f', 0));
+    jsonObject.insert("Tplat", QString::number(static_cast<double>(t_plateau), 'f', 0));
     jsonObject.insert("Pmax", QString::number(static_cast<double>(Pmax), 'f', 0));
     jsonObject.insert("Pmin", QString::number(static_cast<double>(Pmin), 'f', 0));
     jsonObject.insert("ModoVentilacion", ui->l_modo->getText());
@@ -510,7 +511,7 @@ QString MainWindow::fillLogMessage(QString cabecera)
     info += "VolumenTidal = " + QString::number(static_cast<double>(VolumenTidal) , 'f', 0) + "    ";
     info += "BPM = " + QString::number(static_cast<double>(BPM) , 'f', 0)+ "    ";
     info += "Relacion_IE = " + QString::number(static_cast<double>(Relacion_IE) , 'f', 0)+ "    ";
-    info += "Tplat = " + QString::number(static_cast<double>(Tplat) , 'f', 0)+ "    ";
+    info += "Tplat = " + QString::number(static_cast<double>(t_plateau) , 'f', 0)+ "    ";
     info += "Pmax = " + QString::number(static_cast<double>(Pmax) , 'f', 0)+ "    ";
     info += "Pmin = " + QString::number(static_cast<double>(Pmin) , 'f', 0)+ "    ";
     info += "ModoVentilacion = " + QString::number(static_cast<double>(Pmin) , 'f', 0)+ "    ";
@@ -536,7 +537,7 @@ QJsonObject MainWindow::fillLogJsonObject(QString cabecera){
     jsonObjectConfiguracion.insert(BPM_key, QString::number(static_cast<double>(  BPM ), 'f', 2));
     jsonObjectConfiguracion.insert(VolumenTidal_key, QString::number(static_cast<double>(  VolumenTidal ), 'f', 2));
     jsonObjectConfiguracion.insert(ModoVentilacion_key, QString::number(static_cast<double>(  ModoVentilacion ), 'f', 2));
-    jsonObjectConfiguracion.insert(Tplat_key, QString::number(static_cast<double>(  Tplat ), 'f', 2));
+    jsonObjectConfiguracion.insert(t_plateau_key, QString::number(static_cast<double>(  t_plateau ), 'f', 2));
     jsonObjectConfiguracion.insert(Pmin_key, QString::number(static_cast<double>(  Pmin ), 'f', 2));
     jsonObjectConfiguracion.insert(EstadoAlarmas_key, QString::number(static_cast<double>( EstadoAlarmas  ), 'f', 2));
     jsonObjectConfiguracion.insert(EstadoBocinas_key, QString::number(static_cast<double>( EstadoBocinas  ), 'f', 2));
@@ -1231,6 +1232,8 @@ void MainWindow::inicialState()
     qDebug()<<"Ancho de screen "+QString::number(QApplication::desktop()->width());
     this->move(-1,-1);
 
+    ui->l_clock_error->hide();
+
     ui->l_alarma->set_Enabled(false); //si no se ha conectado deshabilito el boton
     ui->l_alarm_icon->hide();
 
@@ -1390,8 +1393,6 @@ bool MainWindow::loadLastConfiguration(){//Carga el archivo de configuracion
         BPM = jsonObjectConfiguracion.value(BPM_key).toString().toFloat();
         VolumenTidal = jsonObjectConfiguracion.value(VolumenTidal_key).toString().toFloat();
         ModoVentilacion = jsonObjectConfiguracion.value(ModoVentilacion_key).toString().toFloat();
-        Tplat = jsonObjectConfiguracion.value(Tplat_key).toString().toFloat();
-        Pmin = jsonObjectConfiguracion.value(Pmin_key).toString().toFloat();
         EstadoAlarmas = jsonObjectConfiguracion.value(EstadoAlarmas_key).toString().toFloat();
         EstadoAlarmas = 0;
         EstadoBocinas = jsonObjectConfiguracion.value(EstadoBocinas_key).toString().toFloat();
@@ -1427,7 +1428,7 @@ void MainWindow::writeInitialConfigurationLog(){
     }
     evento = "Configuracion Inicial Modo Ventilacion -> " + value_modo;
     write_LOG(evento);
-    evento = "Configuracion Inicial T plateau -> " + QString::number(static_cast<double>(Tplat), 'f', 0);
+    evento = "Configuracion Inicial T plateau -> " + QString::number(static_cast<double>(t_plateau), 'f', 0);
     write_LOG(evento);
     evento = "Configuracion Inicial PEEP -> " + QString::number(static_cast<double>(Pmin), 'f', 0);
     write_LOG(evento);
@@ -1456,7 +1457,6 @@ bool MainWindow::saveLastConfiguration(){//Salva en archivo de configuracion
     jsonObjectConfiguracion.insert(BPM_key, QString::number(static_cast<double>(  BPM ), 'f', 2));
     jsonObjectConfiguracion.insert(VolumenTidal_key, QString::number(static_cast<double>(  VolumenTidal ), 'f', 2));
     jsonObjectConfiguracion.insert(ModoVentilacion_key, QString::number(static_cast<double>(  ModoVentilacion ), 'f', 2));
-    jsonObjectConfiguracion.insert(Tplat_key, QString::number(static_cast<double>(  Tplat ), 'f', 2));
     jsonObjectConfiguracion.insert(Pmin_key, QString::number(static_cast<double>(  Pmin ), 'f', 2));
     jsonObjectConfiguracion.insert(EstadoAlarmas_key, QString::number(static_cast<double>( EstadoAlarmas  ), 'f', 2));
     jsonObjectConfiguracion.insert(EstadoBocinas_key, QString::number(static_cast<double>( EstadoBocinas  ), 'f', 2));
@@ -1562,6 +1562,12 @@ void MainWindow::setVolumenFromFluke(float vol){
 float MainWindow::getMaxVolumen(){
     return VolumenTidal;
 }
+float MainWindow::getCopyingState(){
+    return copyingState;
+}
+void MainWindow::setCopyingState(float copyState){
+    copyingState = copyState;
+}
 void MainWindow::setMaxVolumen(float max_vol){
     MAX_VOLUMEN = max_vol;
     ui->l_max_vol->setText(QString::number(static_cast<double>(MAX_VOLUMEN), 'f', 0) + "ml");
@@ -1618,8 +1624,8 @@ QByteArray MainWindow::sendData(float state){
     buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 5 - Relación Inspiración/Expiración IE.
                                                                                          IEEE_754_class::convertirA_754_32(Relacion_IE))));
 
-    buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 6 - Tiempo de Plateau Tplat
-                                                                                         IEEE_754_class::convertirA_754_32(Tplat))));
+    buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 6 - copyingState if copying or not files //copying blocks UI
+                                                                                         IEEE_754_class::convertirA_754_32(copyingState))));
 
     buffer.append(IEEE_754_class::changeEndianess(IEEE_754_class::convert_Uint32To_Bytes(////word 7 - Presión máxima permitida Pmax
                                                                                          IEEE_754_class::convertirA_754_32(Pmax))));

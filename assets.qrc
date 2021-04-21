@@ -233,5 +233,6 @@
         <file>icons/close.png</file>
         <file>icons/hide.png</file>
         <file>icons/show.png</file>
+        <file>icons/sand_watch.png</file>
     </qresource>
 </RCC>

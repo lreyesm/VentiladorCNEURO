@@ -8,6 +8,7 @@
 #include <QScrollBar>
 #include "optionsselector.h"
 #include "loadinganimation.h"
+#include "mainwindow.h"
 
 Download_Data::Download_Data(QWidget *parent, QString pacient_name) :
     QWidget(parent),
@@ -36,6 +37,8 @@ Download_Data::Download_Data(QWidget *parent, QString pacient_name) :
     ui->l_page->setText(getCurrentPageString(current_page));
 
     ui->listWidget->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 25px;}");
+
+    QString res = removeUSBMocks();
 
     connect(ui->listWidget->verticalScrollBar(), &QScrollBar::valueChanged, this, &Download_Data::onScrollerChanged);
 }
@@ -105,9 +108,9 @@ QStringList Download_Data::searchPacientsData(QString dir_source){
     dir.setPath(dir_source); ///...Pacientes/
 
     QStringList list_Pacient_folders = dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-    for(int i=0; i < list_Pacient_folders.size(); i++){
-        list_Pacient_folders[i].replace("_", " ");
-    }
+    //    for(int i=0; i < list_Pacient_folders.size(); i++){
+    //        list_Pacient_folders[i].replace("_", " ");
+    //    }
     return list_Pacient_folders;
 }
 
@@ -190,43 +193,82 @@ void Download_Data::on_listWidget_pressed(const QModelIndex &index)
 
 void Download_Data::on_l_descargar_todos_clicked()
 {
-//    LoadingAnimation *animation = new LoadingAnimation(this, "Copiando Archivos...");
-//    animation->showAnimation();
+    setCopyingState(1);
+
     searchData(rootFolder);
 
     ui->l_descargar_todos->setChecked(false);
-    if(!folder_to_copy.isEmpty()){
-        if(copyRecursively(dir_pacientes, folder_to_copy + "/Pacientes")){
-//            animation->stopAnimation();
-            MessageDialog *message = new MessageDialog(this, "Éxito", "Todos descargados correctamente");
-            message->showCenter();
-        }
-    }else{
-//        animation->stopAnimation();
-        MessageDialog *message = new MessageDialog(this, "Error", "No hay dispositivo conectado");
-        message->showCenter();
-    }
+
+    LoadingAnimation *animation = new LoadingAnimation(this, "Copiando Archivos...");
+    animation->centerWidget();
+    animation->showLoadingAnimation(false);
+    animation->showAnimation();
+    connect(this, &Download_Data::stopAnimation,
+            animation, &LoadingAnimation::stopAnimation);
+    QTimer::singleShot(300, this, &Download_Data::initCopyAll);
 }
 
 void Download_Data::on_l_descargar_paciente_clicked()
 {
-//    LoadingAnimation *animation = new LoadingAnimation(this, "Copiando Archivos...");
-//    animation->showAnimation();
+    setCopyingState(1);
+
     searchData(rootFolder);
 
     ui->l_descargar_paciente->setChecked(false);
-    if(!folder_to_copy.isEmpty()){
+
+    LoadingAnimation *animation = new LoadingAnimation(this, "Copiando Archivos...");
+    animation->centerWidget();
+    animation->showLoadingAnimation(false);
+    animation->showAnimation();
+    connect(this, &Download_Data::stopAnimation,
+            animation, &LoadingAnimation::stopAnimation);
+    QTimer::singleShot(300, this, &Download_Data::initCopyPacient);
+}
+void Download_Data::initCopyPacient(){
+    if(!QFile::exists(dir_paciente)){
+        MessageDialog *message = new MessageDialog(this, "Error", "No se encontró datos para copiar");
+        message->showCenter();
+    }
+    else if(!folder_to_copy.isEmpty()){
         if(copyRecursively(dir_paciente, folder_to_copy + "/Pacientes/" + paciente_seleccionado)){
-//            animation->stopAnimation();
-            MessageDialog *message = new MessageDialog(this, "Éxito", "Paciente descargado correctamente");
+            //            animation->stopAnimation();
+            MessageDialog *message = new MessageDialog(this, "Éxito", "Datos descargados correctamente");
+            message->showCenter();
+        }else{
+            MessageDialog *message = new MessageDialog(this, "Error", "No hay dispositivo conectado");
             message->showCenter();
         }
     }else{
-//        animation->stopAnimation();
+        //        animation->stopAnimation();
         MessageDialog *message = new MessageDialog(this, "Error", "No hay dispositivo conectado");
         message->showCenter();
     }
+    emit stopAnimation();
+    setCopyingState(0);
 }
+void Download_Data::initCopyAll(){
+    if(!QFile::exists(dir_pacientes)){
+        MessageDialog *message = new MessageDialog(this, "Error", "No se encontró datos para copiar");
+        message->showCenter();
+    }
+    else if(!folder_to_copy.isEmpty()){
+        if(copyRecursively(dir_pacientes, folder_to_copy + "/Pacientes")){
+            //            animation->stopAnimation();
+            MessageDialog *message = new MessageDialog(this, "Éxito", "Todos descargados correctamente");
+            message->showCenter();
+        }else{
+            MessageDialog *message = new MessageDialog(this, "Error", "No hay dispositivo conectado");
+            message->showCenter();
+        }
+    }else{
+        //        animation->stopAnimation();
+        MessageDialog *message = new MessageDialog(this, "Error", "No hay dispositivo conectado");
+        message->showCenter();
+    }
+    emit stopAnimation();
+    setCopyingState(0);
+}
+
 void Download_Data::on_l_eject_memory_clicked()
 {
     if(checkIfUSBConnected()){
@@ -236,26 +278,8 @@ void Download_Data::on_l_eject_memory_clicked()
         ProcessesClass::executeProcess(this, "sudo umount /dev/sda1");
         ProcessesClass::executeProcess(this, "sudo udisksctl power-off -b /dev/sda1");
 
-        QDir dir(rootFolder);
-        QStringList list_Drives = dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-        list_Drives.removeAll("");
+        QString res = removeUSBMocks();
 
-        if(!list_Drives.isEmpty()){
-            QString drive;
-            qDebug()<<"Drives to delete: ";
-
-            foreach (drive, list_Drives) {
-                qDebug()<<drive;
-                if(!drive.isEmpty()){
-                    dir.setPath(dir.path() + "/" + drive);
-                    QStringList subfolders = dir.entryList(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot );
-                    qDebug()<<"Dir to delete: " << "sudo rmdir " + dir.path();
-                    ProcessesClass::executeProcess(this, "sudo rmdir "+ dir.path(),
-                                                   ProcessesClass::LINUX, 500, true);
-
-                }
-            }
-        }
         MessageDialog *message = new MessageDialog(this, "Ejectada", "Memoria removida correctamente");
         message->showCenter();
     }
@@ -264,7 +288,46 @@ void Download_Data::on_l_eject_memory_clicked()
         message->showCenter();
     }
 }
+QString Download_Data::removeUSBMocks(){
+    QString response = "";
+    QDir dir(rootFolder);
+    QStringList list_Drives = dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    list_Drives.removeAll("");
 
+    QString penDrives = ProcessesClass::executeProcess(this, "lsusb");
+
+    if(penDrives.contains("Device 001")){
+        penDrives.remove("Device 001");
+        penDrives.remove("Device 002");
+        qDebug()<<"****************** penDrives *******************";
+        qDebug()<<penDrives;
+        qDebug()<<"****************** end penDrives *******************";
+        if(!penDrives.contains("Device ")){
+            if(!list_Drives.isEmpty()){
+                QString drive;
+                qDebug()<<"Drives to delete: ";
+                QString command = "";
+                foreach (drive, list_Drives) {
+                    qDebug()<<drive;
+                    if(!drive.isEmpty()){
+                        dir.setPath(dir.path() + "/" + drive);
+                        //                    QStringList subfolders = dir.entryList(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot );
+                        QString removeCommand = "sudo rm -rf \"" + dir.path() + "\"";
+                        qDebug()<<"Dir to delete: " << removeCommand;
+                        command += removeCommand + " && ";
+                    }
+                }
+                command = command.trimmed().remove(command.length() - 3, 2);
+                response = ProcessesClass::executeProcess(this, command,
+                                                          ProcessesClass::LINUX, 800, true);
+                qDebug()<<"command to delete: " << command;
+                qDebug()<<"response to delete: " << response;
+
+            }
+        }
+    }
+    return response;
+}
 QString Download_Data::getCurrentPageString(int currentPage){
     QAbstractItemModel* model = ui->listWidget->model();
     int num_rows = model->rowCount();
@@ -303,4 +366,23 @@ void Download_Data::on_l_up_trigger_clicked()
                                      QAbstractItemView::PositionAtTop);
     }
     //    ui->l_page->setText(getCurrentPageString(current_page));
+}
+
+MainWindow* Download_Data::getMainWindowInstance(){
+    MainWindow *mainWindow = qobject_cast<MainWindow*>(this->parent()->parent());
+    if(mainWindow){
+        qDebug()<<"Casteo OK";
+        return mainWindow;
+    }else{
+        qDebug()<<"Casteo ERROR";
+        return nullptr;
+    }
+}
+
+void Download_Data::setCopyingState(float state){
+    MainWindow *w = getMainWindowInstance();
+    if( w ){
+        //setear estado de calibracion de presion s1
+        w->setCopyingState(state);
+    }
 }

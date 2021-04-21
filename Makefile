@@ -859,6 +859,7 @@ qrc_assets.cpp: assets.qrc \
 		icons/PEEP_label_terciary_capnography_off.png \
 		icons/alarma.png \
 		icons/PCO2_label_off.png \
+		icons/sand_watch.png \
 		icons/radio_button_off.png \
 		icons/cartel_inicio_vent.png \
 		icons/eje_vertical.png \
@@ -1095,6 +1096,7 @@ qrc_assets.cpp: assets.qrc \
 		icons/PEEP_label_terciary_capnography_off.png \
 		icons/alarma.png \
 		icons/PCO2_label_off.png \
+		icons/sand_watch.png \
 		icons/radio_button_off.png \
 		icons/cartel_inicio_vent.png \
 		icons/eje_vertical.png \
@@ -1521,7 +1523,11 @@ moc_optionsselector.cpp: optionsselector.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/Ventilador/Ventilador/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/Ventilador/Ventilador -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtPrintSupport -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtSerialPort -I/usr/include/arm-linux-gnueabihf/qt5/QtNetwork -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/6 -I/usr/include/arm-linux-gnueabihf/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/arm-linux-gnueabihf/6/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/6/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include optionsselector.h -o moc_optionsselector.cpp
 
-moc_passwordrequest.cpp: passwordrequest.h \
+moc_passwordrequest.cpp: keyboard.h \
+		qlabel_button.h \
+		mylabelstateanimated.h \
+		globals_settings.h \
+		passwordrequest.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/Ventilador/Ventilador/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/Ventilador/Ventilador -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtPrintSupport -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtSerialPort -I/usr/include/arm-linux-gnueabihf/qt5/QtNetwork -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/6 -I/usr/include/arm-linux-gnueabihf/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/arm-linux-gnueabihf/6/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/6/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include passwordrequest.h -o moc_passwordrequest.cpp
@@ -1737,6 +1743,7 @@ ui_passwordrequest.h: passwordrequest.ui \
 		/usr/lib/qt5/bin/uic \
 		mylabelanimated.h \
 		qlabel_button.h \
+		mylineedit.h \
 		globals_settings.h
 	/usr/lib/qt5/bin/uic passwordrequest.ui -o ui_passwordrequest.h
 
@@ -1920,7 +1927,10 @@ screen_calibration.o: screen_calibration.cpp screen_calibration.h \
 		mylabelstateanimated.h \
 		screen_modo_at.h \
 		screenflukecontroller.h \
-		vt_communication_interface_wrapper.h
+		vt_communication_interface_wrapper.h \
+		screen_apagado_sistema.h \
+		messagedialog.h \
+		processesclass.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o screen_calibration.o screen_calibration.cpp
 
 screen_logo.o: screen_logo.cpp screen_logo.h \
@@ -1966,7 +1976,8 @@ screen_modo_at.o: screen_modo_at.cpp screen_modo_at.h \
 		tcp_server_controller.h \
 		dialog_question.h \
 		loadinganimation.h \
-		passwordrequest.h
+		passwordrequest.h \
+		screen_apagado_sistema.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o screen_modo_at.o screen_modo_at.cpp
 
 screen_pacient_data.o: screen_pacient_data.cpp screen_pacient_data.h \
@@ -2136,7 +2147,32 @@ download_data.o: download_data.cpp download_data.h \
 		messagedialog.h \
 		processesclass.h \
 		optionsselector.h \
-		loadinganimation.h
+		loadinganimation.h \
+		mainwindow.h \
+		plot.h \
+		qcustomplot.h \
+		settingparameter.h \
+		settingcenterparameters.h \
+		settingmodes.h \
+		settingieratio.h \
+		butterworthlowpassfilter.h \
+		checkserialmessage.h \
+		datetimewidget.h \
+		qlabel_button.h \
+		keyboard.h \
+		mylabelstateanimated.h \
+		keynumbers.h \
+		screen_logo.h \
+		serialport.h \
+		ieee_754_class.h \
+		screen_calibration.h \
+		screen_pacient_data.h \
+		pacientclass.h \
+		screen_datetime.h \
+		readtempds18b20class.h \
+		widget_options.h \
+		pacient_data_in_menu.h \
+		tcp_server_controller.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o download_data.o download_data.cpp
 
 tcp_server_controller.o: tcp_server_controller.cpp tcp_server_controller.h
@@ -2207,10 +2243,13 @@ optionsselector.o: optionsselector.cpp optionsselector.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o optionsselector.o optionsselector.cpp
 
 passwordrequest.o: passwordrequest.cpp passwordrequest.h \
+		keyboard.h \
+		qlabel_button.h \
+		mylabelstateanimated.h \
+		globals_settings.h \
 		ui_passwordrequest.h \
 		mylabelanimated.h \
-		globals_settings.h \
-		qlabel_button.h \
+		mylineedit.h \
 		messagedialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o passwordrequest.o passwordrequest.cpp
 

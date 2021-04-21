@@ -20,6 +20,8 @@ public:
     void setLoadingText(QString text);
 
     void showAnimation();
+    void centerWidget();
+    void showLoadingAnimation(bool show);
 signals:
     void stoppedAnimation();
 public slots:
@@ -32,6 +34,7 @@ private:
     Ui::LoadingAnimation *ui;
     QPixmap pix = QPixmap();
     QTimer timer;
+    bool show_animation = true;
 };
 
 #endif // LOADINGANIMATION_H
